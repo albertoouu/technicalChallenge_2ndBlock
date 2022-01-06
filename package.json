@@ -1,0 +1,30 @@
+{
+  "name": "technicalchallenge_2ndblock",
+  "version": "1.0.0",
+  "description": "notes app",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/albertoouu/technicalChallenge_2ndBlock.git"
+  },
+  "keywords": [
+    "notes",
+    "app",
+    "portfolio"
+  ],
+  "author": "Alberto Gutierrez (albertoouu)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/albertoouu/technicalChallenge_2ndBlock/issues"
+  },
+  "homepage": "https://github.com/albertoouu/technicalChallenge_2ndBlock#readme",
+  "devDependencies": {
+    "eslint": "^8.6.0"
+  },
+  "dependencies": {
+    "firebase": "^9.6.1"
+  }
+}
