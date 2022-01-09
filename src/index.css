@@ -92,6 +92,52 @@ main {
 
 .block-grid {
   display: grid;
-  grid-template-columns: 20% auto;
+  grid-template-columns: 25% auto;
   grid-gap: 3rem;
+}
+
+.agregar-nota-content {
+  background: #fff;
+  box-shadow: var(--shadow);
+  border-radius: 15px;
+  padding: 1rem;
+}
+
+#mostrar-notas-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  background: #fff;
+  box-shadow: var(--shadow);
+  border-radius: 15px;
+}
+
+@media only screen and (max-width: 860px) {
+  .block-grid {
+    grid-template-columns: 100%;
+  }
+  .header-title p {
+    display: none;
+  }
+  .agregar-nota-content {
+    margin-left: 12rem;
+    margin-right: 12rem;
+  }
+}
+@media only screen and (max-width: 630px) {
+  .agregar-nota-content {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media only screen and (max-width: 350px) {
+  .header-action button span {
+    display: none;
+  }
 }
