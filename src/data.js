@@ -65,16 +65,31 @@ let renderNotes = () => {
     console.log(note);
     document.getElementById("mostrar-notas-content").innerHTML += `
     <div class="card" style="width: 18rem;">
-  <div class="card-body">
-    <h5 class="card-title">${note.title}</h5>
-    <h6 class="card-subtitle mb-2 text-muted">${note.tipo}</h6>
-    <p class="card-text">${note.description}</p>
-    <a href="#" class="card-link">Card link</a>
-    <a href="#" class="card-link">Another link</a>
-  </div>
-</div>
+      <div class="card-body">
+        <h5 class="card-title">${note.title}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">${note.tipo}</h6>
+        <h6 class="card-subtitle mb-2 text-muted">Objetivo a: ${note.mes}</h6>
+        <p class="card-text">${note.description}</p>
+        <div class="card-btns">
+          <button class="btn btn-secondary btn-sm btn-edit" data-id="${note.id}">Edit</button>
+          <button class="btn btn-secondary btn-sm btn-delete" data-id="${note.id}">Delete</button>
+        </div>
+      </div>
+   </div>
     `;
   }
+  const btnsEdit = document.querySelectorAll(".btn-edit");
+  btnsEdit.forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      console.log("edit", e.target.dataset.id);
+    });
+  });
+  const btnsDelete = document.querySelectorAll(".btn-delete");
+  btnsDelete.forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      console.log("delete", e.target.dataset.id);
+    });
+  });
 };
 
 /*
