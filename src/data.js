@@ -3,12 +3,20 @@ import {
   collection,
   addDoc,
   doc,
-  getDocs,
+  deleteDoc,
+  getDoc,
   onSnapshot,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 let notes = [];
-let sortedNotes;
+let sortedNotes = [];
+let submit = true;
+let id = ''
+
+const onGetNotes = (callback) => {
+  onSnapshot(collection(db, "notes"), callback);
+};
 
 export let traerDatos = async () => {
   onGetNotes((snapshot) => {
@@ -18,15 +26,14 @@ export let traerDatos = async () => {
       nota.id = doc.id;
       notes.push(nota);
     });
-    console.log(notes);
     sortedNotes = notes.slice().sort((a, b) => b.date - a.date);
 
     renderNotes();
+    listeners()
   });
 };
 
 const noteForm = document.getElementById("Nota");
-
 const saveNote = async (title, tipo, mes, description) => {
   try {
     const docRef = await addDoc(collection(db, "notes"), {
@@ -36,40 +43,75 @@ const saveNote = async (title, tipo, mes, description) => {
       description,
       date: new Date(),
     });
-    console.log("Document written with ID: ", docRef.id);
   } catch (e) {
     console.error("Error adding document: ", e);
   }
 };
-
 noteForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  console.log("submiting");
   const title = noteForm["titulo"].value;
   const tipo = noteForm["dropdown"].value;
   const mes = noteForm["mes"].value;
   const description = noteForm["description"].value;
-  console.log(title, tipo, mes, description);
-  await saveNote(title, tipo, mes, description);
-  noteForm.reset();
+  if(submit) {
+    await saveNote(title, tipo, mes, description);
+    noteForm.reset();
+  } else {
+    await updateNote(id,{
+      title,
+      tipo,
+      mes,
+      description
+    })  
+    document.getElementById('submitEdit').innerHTML = 'Submit'
+    submit = true
+    noteForm.reset()
+  }
 });
 
-const onGetNotes = (callback) => {
-  onSnapshot(collection(db, "notes"), callback);
-};
+let updateNote = async (idDoc,updatedNote) => {
+  let noteRef = doc(db, "notes", idDoc)
+  await updateDoc(noteRef, updatedNote)
+}
 
 let renderNotes = () => {
-  console.log("render notes");
   document.getElementById("mostrar-notas-content").innerHTML = "";
   for (const note of sortedNotes) {
-    console.log(note);
+    let bg = ''
+    let tx = ''
+    switch(note.tipo){
+      case 'Personal':
+        bg = 'bg-dark'
+        tx = 'text-white'
+        break;
+      case 'Professional':
+        bg = 'bg-light'
+        tx = 'text-dark'
+        break;
+      case 'Relationships':
+        bg = 'bg-warning'
+        tx = 'text-dark'
+        break;
+      case 'Family':
+        bg = 'bg-danger'
+        tx = 'text-white'
+        break;
+      case 'Health':
+        bg = 'bg-success'
+        tx = 'text-white'
+        break;
+      case 'Learning':
+        bg = 'bg-primary'
+        tx = 'text-white'
+        break;
+    }
     document.getElementById("mostrar-notas-content").innerHTML += `
-    <div class="card" style="width: 18rem;">
+    <div class="card ${bg} ${tx}" style="width: 18rem;">
       <div class="card-body">
         <h5 class="card-title">${note.title}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">${note.tipo}</h6>
-        <h6 class="card-subtitle mb-2 text-muted">Objetivo a: ${note.mes}</h6>
-        <p class="card-text">${note.description}</p>
+        <h6 class="card-subtitle mb-2">${note.tipo}</h6>
+        <h6 class="card-subtitle mb-2">Objetivo a: ${note.mes}</h6>
+        <p class="card-text fw-light">${note.description}</p>
         <div class="card-btns">
           <button class="btn btn-secondary btn-sm btn-edit" data-id="${note.id}">Edit</button>
           <button class="btn btn-secondary btn-sm btn-delete" data-id="${note.id}">Delete</button>
@@ -78,23 +120,32 @@ let renderNotes = () => {
    </div>
     `;
   }
+
+};
+
+let listeners = () => {
   const btnsEdit = document.querySelectorAll(".btn-edit");
   btnsEdit.forEach((btn) => {
     btn.addEventListener("click", async (e) => {
-      console.log("edit", e.target.dataset.id);
+      id = e.target.dataset.id
+      let nota =await getDoc(doc(db, "notes", e.target.dataset.id))
+      submitEdit(nota)
     });
   });
   const btnsDelete = document.querySelectorAll(".btn-delete");
   btnsDelete.forEach((btn) => {
     btn.addEventListener("click", async (e) => {
-      console.log("delete", e.target.dataset.id);
+      await deleteDoc(doc(db,"notes",e.target.dataset.id))
     });
   });
-};
+}
 
-/*
-const querySnapshot = await getDocs(collection(db, "notes"));
-querySnapshot.forEach((doc) => {
-  console.log(doc.id, "=>", doc.data());
-});
-*/
+let submitEdit = (nota) => {
+  document.getElementById('submitEdit').innerHTML = 'Update'
+  const noteForm = document.getElementById("Nota");
+  noteForm["titulo"].value = nota.data().title
+  noteForm["dropdown"].value = nota.data().tipo
+  noteForm["mes"].value = nota.data().mes
+  noteForm["description"].value = nota.data().description
+  submit = false
+}
