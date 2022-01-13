@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"
 
 const firebaseApp = initializeApp({
   apiKey: "AIzaSyCTKvFidCIMJuNYHSqw-PEJJU0qMBBo0GI",
@@ -10,4 +11,5 @@ const firebaseApp = initializeApp({
   appId: "1:122778719268:web:22b8db0309c9a0762074b1",
 });
 
-export const db = getFirestore();
+export const db = getFirestore(firebaseApp);
+export const  auth = getAuth(firebaseApp)
