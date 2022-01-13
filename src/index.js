@@ -56,6 +56,7 @@ facebookSignInButton.addEventListener('click', async (e) => {
         const errorMessage = error.message
         const email = error.email
         const credential = FacebookAuthProvider.credentialFromError
+        console.log(errorMessage, errorCode, email, credential)
     })
 })
 signInForm.addEventListener('submit', async (e) => {
